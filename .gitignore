@@ -1,0 +1,12 @@
+*.bcf
+*.log
+*.aux
+*.bbl
+*.blg
+*.gz
+*-blx.bib
+*.out
+*.rel
+*.bst
+*.run.xml
+auto
