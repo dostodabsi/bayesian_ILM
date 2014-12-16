@@ -1,3 +1,5 @@
+*.dvi
+*.bak
 *.bcf
 *.log
 *.aux

@@ -37,10 +37,10 @@ the structure of human language.'' One way of sheding light on this question is 
 how children acquire language. Traditional, bio-linguistic accounts (Pinker \& Bloom, 1990),
 argue that most of our language knowledge is innate, formed by natural selection. In its extreme form, most of language learning is considered illusory (Smith, 2011). Recently, these viewpoints have been revised, and focus has been put on cultural factors. Since
 languages are culturally transmitted, they are potentially under selection for learnability.
-The basic argument is that languages adopt to become learnable by the agents, which leads to
+The basic argument is that languages adopt to become learnable by the agents, \textcolor{red}{I dont like this sentence...Implies somehow that language, in the first place was not learnable. I think one cannot say it adopts TO DO SOMETHING. It adopts because of the properties of the (dynamical) system it is} which leads to
 universal features like regularization and compositionality. The knowledge of language of one
-generation gets transmitted to the next generation and so on. The innate bias of the Agent - its
-cognitive constraints - form the language that we end up with.
+generation gets transmitted to the next generation and so on. The innate bias of the Agent in combination with cultural transmission and ontgenetical learning form the language that we end up with 
+%\textcolor{red}{not entirely..I think thats the point. Its all about the interaction between the inateness, the cultural transmission and ontogenetical learning - all these elements contribute somehow to the language shaping}.
 
 \subsection*{Iterated Learning Model}
 
@@ -61,6 +61,7 @@ the specific language (here the word "elk") gets passed onto the next generation
 learns the language of the previous generation using some algorithm, and passes its variation
 of the language onto the next generation. In an early experiment using this paradigm, Bartlett
 had one participant draw an elk, and after some generations ended up with the drawing of a cat \parencite{bartlett1932remembering}.
+Summing up, the ILM contains language-using agents, language-learning agents, meaning-space and utterance space \parencite{kirby2002emergence}. 
 
 \subsection*{Bayesian Rational Agents}
 
@@ -75,14 +76,23 @@ Bayes' Rule
        P(h|d) = \frac{P(h) P(d|h)}{\sum_{h} P(h) P(d|h)}
 \end{equation}
 
-the agent computes the posterior distribution. Given the posterior distributions for each language, describing the probability of the data given each language, the agent picks one language using the specific learning algorithm. The agent then
+the agent computes the posterior distribution. Given the posterior distributions for each language, describing the probability of the data given each language, the agent derives a language using the specific learning algorithm. The agent then
 outputs some utterances using this language, serving as input for the next generation.\footnote{while assumptions of Bayesian rationality are controversial \parencite{marcus2013robust}, experiments in this domain \parencite{kalish2007iterated} show that they might be reasonable.}
 \\
 
-Each learner sees some data, forms a hypothesis and then produces data according to that hypothesis, which serves as input for the next generation. This process across generations constitutes a markov chain, where the probability of a learner choosing a certain hypothesis, that is, acquire a certain language, depends only on the hypothesis chosen by the previous learner. We can construct a transition matrix which describes the probabilities that each hypothesis will lead to itself or any other hypothesis in the next generation \parencite{ferdinand2008language}. This matrix holds all the possible trajectories of the iterated learning model. Once the model has converged, we can take the first eigenvector of the transition matrix, which yields the stationary distribution. The stationary distribution can be thought of as the expected distribution of languages that emerged due to cultural evolution \parencite{kirby2007innateness}.
+In other words, each learner sees some data, forms a hypothesis and then produces data according to that hypothesis, which serves as input for the next generation. This process across generations can be modeled as a markov chain, where the probability of a learner choosing a certain hypothesis, that is, acquire a certain language, depends only on the hypothesis chosen by the previous learner. We can construct a transition matrix which %\textcolor{red}{contains these probabilities and which then is applied to the language, creating } 
+describes the probabilities that each hypothesis will lead to itself or any other hypothesis in the next generation \parencite{ferdinand2008language}. This matrix holds all the possible trajectories of the iterated learning model. 
+%Once the model has converged, 
+The first eigenvector of the transition matrix, is under certain conditions proportional to the stationary distribution. 
+%The stationary distribution can be thought of as the expected distribution of languages that emerged due to cultural evolution \parencite{kirby2007innateness}. 
+This specific feature of the ILM is problematic regarding natural languages since those do obviously not converge at all.
 
 \subsection*{Previous Results}
-\textcite{griffiths2005bayesian} demonstrated that iterated learning results in convergence to the prior distributions of hypothesis, i.e. the innate biases reflecting general cognitive capacities. Stated differently, the expected distribution of languages is proportional to the prior distribution, suggesting that language evolution is very much influenced by learning. It thus gives a detailed mechanistic account of how languages evolve through cultural transmission without relying on natural selection. However, by using not ``proportional sampling'' but MAP\footnote{MAP is a point estimate which has the maximum a posteriori probability.} as learning algorithm, \textcite{kirby2007innateness} found that the prior is not a good predictor of the resulting distribution of languages. Instead, the relation between prior and posterior gets obscured by iterated learning; that is, the number of training examples - the cultural bottleneck - determines the posterior distribution. We can thus conclude that the type of learning algorithm is crucial in this simulation studies. When learners use a form of Gibbs sampling, the prior converges to the posterior. When MAP is used, the posterior is affected both by the prior and by the amount of information transmitted \parencite{griffiths2007language}.\\
+\textcite{griffiths2005bayesian} demonstrated that iterated learning results in convergence to the prior distributions of hypothesis, i.e. the innate biases reflecting general cognitive capacities. Stated differently, the expected distribution of languages is proportional to the prior distribution.
+%suggesting that language evolution is very much influenced by learning under innate constraints. 
+It thus gives a detailed mechanistic account of how languages evolve through cultural transmission in interaction with individual learning and evolutionary constraints.
+% without relying on natural selection. 
+However, by using not ``proportional sampling'' but MAP\footnote{MAP is a point estimate which has the maximum a posteriori probability.} as learning algorithm, \textcite{kirby2007innateness} found that the prior is not a good predictor of the resulting distribution of languages. Instead, the relation between prior and posterior gets obscured by iterated learning; that is, the number of training examples - the cultural bottleneck - determines the posterior distribution. We can thus conclude that the type of learning algorithm is crucial in this simulation studies. When learners use a form of Gibbs sampling, the prior converges to the posterior. When MAP is used, the posterior is affected both by the prior and by the amount of information transmitted \parencite{griffiths2007language}.\\
 
 In the studies mentioned above, each generation only consists of one individual. However, when learners learn from multiple individuals - a situation much closer resembling real life - different results emerge. \textcite{smith2009iterated} showed that the straightforward mapping from prior to posterior vanished when considering multiple agents per generation, and urges modellers to use a more realistic setting, possibly incorporating social structures.
 
