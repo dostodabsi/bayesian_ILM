@@ -3,8 +3,6 @@
 # you need to install Julia from here: http://julialang.org/downloads/
 # and JAGS from here: http://mcmc-jags.sourceforge.net/
 
-# when you've done that, you can install important Julia packages:
-
 # important:
 # -- IJulia => enhanced interactive REPL, also notebook
 # -- Distributions, StatsBase => exactly what it says
