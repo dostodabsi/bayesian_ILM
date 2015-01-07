@@ -12,3 +12,4 @@
 *.bst
 *.run.xml
 auto
+presentation/.ipynb_checkpoints
