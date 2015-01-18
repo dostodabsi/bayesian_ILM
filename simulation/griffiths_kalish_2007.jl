@@ -1,5 +1,5 @@
 #=
-Simple bayesian iterated learning with two languages from Griffiths and Kalish (2005, pp.447)
+Simple bayesian iterated learning with two languages from Griffiths and Kalish (2007, pp.447)
 
 Terminology:
 ------------
