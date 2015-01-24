@@ -8,8 +8,7 @@ end
 
 
 function simulate(;MAP=true, N_sam=1, N_gen=10000,
-                   priors=[.8 .1 .1; .1 .1 .8],
-                   H=[.6 .2 .2; .2 .6 .2; .2 .2 .6])
+                   priors=[.8 .1 .1; .1 .1 .8], H=[.6 .2 .2; .2 .6 .2; .2 .2 .6])
 
     # Julia version of Ferdinand & Zuidema (2008) Appendix A
     # wrapped in a function, cleaned up code a little
@@ -40,7 +39,7 @@ function simulate(;MAP=true, N_sam=1, N_gen=10000,
     # ~ likelihood of data points under each hypothesis
     hypotheses = log(H)
 
-    # initial data, uniform[1, 3]
+    # initial data matrix
     data = rand(1:N_dat, (1, N_sampop))
 
     # for each generation
@@ -84,9 +83,11 @@ function simulate(;MAP=true, N_sam=1, N_gen=10000,
         end
 
         # generate data
+        data = Int64[]
         for i in 1:N_pop
             weights = exp(hypotheses[agents_hypothesis[i], :])
-            data[i] = wsample(1:N_dat, collect(weights), N_sam)[1]
+            agent_data = wsample(1:N_dat, collect(weights), N_sam)
+            append!(data, agent_data)
         end
     end
 
@@ -109,12 +110,13 @@ function simulate(;MAP=true, N_sam=1, N_gen=10000,
 end
 
 
-# simulate effect of bottleneck size (for canonical hypotheses only)
-function simulate_bottlenecks(;MAP=true, bottlenecks=[1:10])
+# simulate effect of bottleneck size
+function simulate_bottlenecks(;MAP=true, canonical = true, bottlenecks=[1:10])
 
     result = zeros(length(bottlenecks), 3)
     prior = [1/3 1/3 1/3] # 1 prior => 1 agent per population
-    hypotheses = [.6 .2 .2; .2 .6 .2; .2 .2 .6] # 3 elements each => 3 possible data points 
+    hypotheses = canonical ? [.6 .2 .2; .2 .6 .2; .2 .2 .6] :
+                             [.6 .3 .1; .2 .6 .2; .1 .3 .6]
 
     for (i, b) in enumerate(bottlenecks)
         result[i, :] = simulate(priors = prior, H = hypotheses, N_sam = b)
@@ -125,24 +127,11 @@ end
 
 
 # simulate effect of multiple agents in a population
-function simulate_population(;MAP=true)
+function simulate_population(;MAP = false)
 
     result = ones(5, 3)
-    one_agent = [.7 .2 .1]
-    two_agents = [.7 .2 .1; .7 .2 .1]
     hypotheses = [.8 .1 .1; .1 .8 .1; .1 .1 .8]
-    # bottleneck = 3, number per generation = 10.000
+    agents = [.7 .2 .1; .7 .2 .1; 7 .2 .1; 7 .2 .1]
 
-    # MAP
-    result[2, :] = simulate(priors = one_agent, H = hypotheses)
-    result[3, :] = mean(simulate(priors = two_agents, H = hypotheses), 1)
-
-    # Sampling
-    result[4, :] = simulate(priors = one_agent, H = hypotheses, MAP=false)
-    result[5, :] = mean(simulate(priors = two_agents, H = hypotheses, MAP=false), 1)
-
-    # prior
-    result[1, :] = one_agent
-
-    return result
+    # TODO
 end
