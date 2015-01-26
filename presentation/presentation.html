@@ -1680,11 +1680,10 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Bayesian-Iterated-Learning-Model"><strong>Bayesian Iterated Learning Model</strong><a class="anchor-link" href="#Bayesian-Iterated-Learning-Model">&#182;</a></h1>
+<p><strong>Bayesian Iterated Learning Model</strong></p>
 </div>
 </div>
 </div>
-
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
@@ -1876,7 +1875,7 @@ Created new window in existing browser session.
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="iteration_single_agents.png"></p>
+<p><img src="files/iteration_single_agents.png"></p>
 </div>
 </div>
 </div>
@@ -2113,7 +2112,7 @@ In&nbsp;[117]:
 <p>Stochastic process whose present state $s_n$ does only depend on the preceeding $s_{n-1}$ but not on earlier states.</p>
 <p>A state is expressed as a vector $S = (s_1, s_2)^T$. The transition from $S_n$ to $S_{n+1}$ is defined by the transition matrix $T$ which contains the transition probabilies for each of the elemts of $S_n$.</p>
 <p><strong>Example</strong>: 
-<img src="markov.png"></p>
+<img src="files/markov.png"></p>
 <p>Consider two possible languages, $E$ and $A$. In each step the probability to change from $E$ to $A$ is 0.7 and to stay with $E$ is 0.3 and so on. 
 This gives the transition matrix $T = \begin{pmatrix} 0.3 &amp; 0.4 \\ 0.7 &amp; 0.6 \end{pmatrix}$.
 For a given initial condition $S_0$ of the distribution of the languages $E$ and $A$ in a population the state $S_1$ is simply given by $T \cdot S_0$. The distribution in the $n$th generation equal to $T^n \cdot S_0$.</p>
@@ -2132,6 +2131,45 @@ $\Rightarrow T \cdot S_0 = \begin{pmatrix} 0.31 \\ 0.69 \end{pmatrix} \Rightarro
 </div>
 </div>
 
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong><em>Deriving the transition matrix for sampling over the posterior</em></strong></p>
+<p>$Q = \begin{pmatrix} q_{11} &amp; q_{12} \\ q_{21} &amp; q_{22} \end{pmatrix} = \begin{pmatrix} 1-q_{21} &amp; q_{12} \\ q_{21} &amp; 1-q_{12} \end{pmatrix}$</p>
+<p><em>### The production algorithm PA</em></p>
+<p>  Production of an $(x,y)$ pair involves two stages
+   (1) sampling an x according to $P(x)$
+   (2) producing an utterance $y$ appropriate to $x$ according to PA</p>
+<p>  $P_{PA}(d=(x,y)|h=i)\begin{cases}P(x)(1-\epsilon) &amp; \text{if y maps to $x$ in $h_i$} \\ P(x)\epsilon &amp; \mathrm{otherwise}\end{cases}$</p>
+<p><em>### Using Bayes rule to derive the posterior</em></p>
+<p>$P(h|d) = \frac{P_{PA}(d|h)P(h)}{\sum_{h\in H}P(d|h)P(h)}$</p>
+<p>Let $\alpha = P(h_1)$, the prior.</p>
+<p>Given a certain $(x,y)$ pair, according to PA, there are three cases $(x,y)$ can be the result of. </p>
+<ol>
+<li><p>$x$ belongs to the subset $S$ of utterances for which each $h$ produces the same $y$
+$\Rightarrow \frac{(1-\epsilon)\alpha}{(1-\epsilon)\alpha + (1-\epsilon)(1-\alpha)} = \alpha$</p>
+</li>
+<li><p>$x$ belongs to the subset $G_1$ for which only $h_1$ produces $y$
+$\Rightarrow \frac{(1-\epsilon)\alpha}{(1-\epsilon)\alpha + \epsilon(1-\alpha)}$</p>
+</li>
+<li><p>$x$ belongs to the subset $G_2$ for which only $h_2$ produces $y$
+$\Rightarrow \frac{\epsilon\alpha}{\epsilon\alpha + (1-\epsilon)(1-\alpha)}$</p>
+</li>
+</ol>
+<p><em>### Determinig $q_{12}$ and $q_{21}$</em></p>
+<p>$q_{12}$ detemines the portion of $h_2$ that switches to $h_1$ and $q_{21}$ the other way around. Thus , for the sampling algorithm, the values are the sums over the three cases, weighted with the respective probability that a observed $(x,y)$ pair belongs to one of the cases.</p>
+<ol>
+<li>$s = \sum_{x \in S}P(x)$</li>
+<li>$(1-s)(1-\epsilon)$ if $h_{n-1}$ was $h_1$;  $(1-s)\epsilon$ if $h_{n-1}$ was $h_2$</li>
+<li>$(1-s)\epsilon$ if $h_{n-1}$ was $h_1$;  $(1-s)(1-\epsilon)$ if $h_{n-1}$ was $h_2$</li>
+</ol>
+<p>thus $q_{12} = s\alpha + \frac{(1-\epsilon)\alpha}{(1-\epsilon)\alpha + \epsilon(1-\alpha)}(1-s)\epsilon + \frac{\epsilon\alpha}{\epsilon\alpha + (1-\epsilon)(1-s)}(1-\epsilon)(1-\epsilon)$</p>
+<p>since $q_{21}$ is the reverse process, it simply derived by interchaniging the $\alpha$ and $1-\alpha$.</p>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
@@ -2141,7 +2179,7 @@ In&nbsp;[118]:
     <div class="input_area">
 <div class="highlight"><pre><span class="k">function</span><span class="nf"> simulate</span><span class="p">(</span><span class="err">α</span><span class="p">,</span> <span class="err">ϵ</span><span class="p">;</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">s</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span> <span class="n">MAP</span><span class="o">=</span><span class="n">false</span><span class="p">)</span>
     <span class="c"># α ~ prior; ϵ ~ noise</span>
-    <span class="c"># s ~ probability for both languages producing the same x</span>
+    <span class="c"># s ~ probability for both languages producing the same y</span>
 
     <span class="k">if</span> <span class="n">MAP</span>
         <span class="n">R</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span> <span class="o">==</span> <span class="o">.</span><span class="mi">5</span> <span class="o">?</span> <span class="o">.</span><span class="mi">5</span> <span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">5</span> <span class="o">?</span> <span class="mi">1</span> <span class="p">:</span> <span class="mi">0</span>
@@ -2804,7 +2842,7 @@ In&nbsp;[]:
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="how-to-best-combine-horizontal-and-vertical-transmission-">How to best combine horizontal and vertical transmission?</h2>
-<p><img src="ways_of_transmission.png"></p>
+<p><img src="files/ways_of_transmission.png"></p>
 <h4 id="-scott-philips-and-kirby-2010-">--- Scott-Philips and Kirby (2010)</h4>
 </div>
 </div>
@@ -2812,7 +2850,7 @@ In&nbsp;[]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[129]:
+In&nbsp;[131]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
