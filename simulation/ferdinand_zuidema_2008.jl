@@ -1,4 +1,33 @@
+using DataFrames
 import Distributions:wsample
+
+"""
+Results:
+1) prior = [.7 .2 .1] => 1 agent; H = [.8 .1 .1; .1 .8 .1; .1 .1 .8]; N_sam = 1
+   => MAP does not converge to prior (it results in 1/3 1/3 1/3)
+   => Sampling converges to prior
+
+   tweaking the hypotheses such that H = [.6 .2 .2; .2 .6 .2; .2 .2 .6]
+   => MAP does converge to the L with highest prior probability (1 0 0)
+   => Sampling converges to prior
+
+2) prior = [.7 .2 .1] => 4 agents; H = [.8 .1 .1; .1 .8 .1; .1 .1 .8]; N_sam = 1
+   => MAP roughly converges to prior (.65 .23 .12)
+   => Sampling does not converge to prior (.82 .13 .05)
+
+
+3) prior = [.7 .2 .1] => 1 agent; H = [.8 .1 .1; .1 .8 .1; .1 .1 .1]; N_sam = 4
+   => MAP does roughly converge to prior (.65 .25 .10)
+   => Sampling does converge to prior (.70 .19 .11)
+
+==> when adding more agents (~4, compared to 1 and 4 samples), MAP dynamics stay the same
+    but Sampling dynamics change
+
+possible extensions:
+   - don't assume perfect rationality
+   - choose the learning algorithm probabilistically? or merge them somehow
+   - make horizontal transmission more realistic by letting the agents "fight" ...
+"""
 
 
 function bayes_rule(prior, llh)
@@ -111,27 +140,33 @@ end
 
 
 # simulate effect of bottleneck size
-function simulate_bottlenecks(;MAP=true, canonical = true, bottlenecks=[1:10])
+function simulate_bottlenecks(;MAP=true, canonical = true, bottlenecks=[1:10],
+                               priors = [1/3 1/3 1/3])
 
-    result = zeros(length(bottlenecks), 3)
-    prior = [1/3 1/3 1/3] # 1 prior => 1 agent per population
+    res = zeros(length(bottlenecks), 3)
     hypotheses = canonical ? [.6 .2 .2; .2 .6 .2; .2 .2 .6] :
                              [.6 .3 .1; .2 .6 .2; .1 .3 .6]
 
     for (i, b) in enumerate(bottlenecks)
-        result[i, :] = simulate(priors = prior, H = hypotheses, N_sam = b)
+        res[i, :] = simulate(priors = priors, H = hypotheses, N_sam = b)
     end
 
-    return result
+    return res
 end
 
 
-# simulate effect of multiple agents in a population
-function simulate_population(;MAP = false)
+# compare effect of multiple {agents, samples} in a population
+function simulate_population(;MAP = true, prior = [.7 .2 .1], agents = 4,
+                              H = [.8 .1 .1; .1 .8 .1; .1 .1 .8])
 
-    result = ones(5, 3)
-    hypotheses = [.8 .1 .1; .1 .8 .1; .1 .1 .8]
-    agents = [.7 .2 .1; .7 .2 .1; 7 .2 .1; 7 .2 .1]
+    res = zeros(2, 3)
+    bottleneck = agents
+    multi_agent = vcat([prior for i in 1:agents]...)
 
-    # TODO
+    res[1, :] = simulate(priors = prior, H = H, N_sam = bottleneck, MAP = MAP)
+    res[2, :] = mean(simulate(priors = multi_agent, H = H, MAP = MAP), 1)
+
+    df = convert(DataFrame, round(res', 3))
+    names!(df, [:population, :bottleneck])
+    return df
 end

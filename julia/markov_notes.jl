@@ -1,4 +1,4 @@
-#=
+"""
 Short summary on (finite) Markov Chains as relevant for the simulation.
 Drawn from:
 
@@ -40,7 +40,7 @@ example:
    p_1 = Tp_0
    p_2 = Tp_1
    p_n = T^n p_0
-=#
+"""
 
 # 1) exercise, rain
 α = .7
@@ -59,7 +59,7 @@ U = [ 0   1   0   0
       0  4/9 4/9 1/9
       0   0   1   0]
 
-#=============
+"""
 the stationary distribution describes the asymptotic behavior of a markov chain
 
     π = Tπ
@@ -77,7 +77,6 @@ matrix, then all distributions are stationary!
 
 one sufficient condition for uniqueness is ergodicity (see below)
 when a markov chain is ergodic, the first eigenvector of T yields the stationary distribution
-=#
 
 #================
 some properties:
@@ -88,4 +87,4 @@ some properties:
 -- ergodic ~ irreducible + aperiodic [is ergodic iff it has just one eigenvalue of value 1]
    uniformly ergodic if there exists a positive integer m such that all elements of T^m are strictly
    positive
-=#
+"""

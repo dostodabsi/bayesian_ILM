@@ -1,4 +1,6 @@
-#=
+using PyPlot
+
+"""
 Simple bayesian iterated learning with two languages from Griffiths and Kalish (2007, pp.447)
 
 Terminology:
@@ -23,8 +25,7 @@ need to specify a production algorithm and priors:
 
 1) Sampling: posterior converges to the prior
 2) MAP: more complex, but when .5 < α < 1-ϵ, directly depends on s and ϵ
-=#
-using PyPlot
+"""
 
 
 function simulate(α, ϵ; n=10, s=.5, MAP=false)
