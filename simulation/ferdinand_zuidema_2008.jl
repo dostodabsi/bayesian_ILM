@@ -60,7 +60,6 @@ function simulate(;MAP=true, N_sam=1, N_gen=10000,
     posterior = zeros(N_pop, N_hyp)
     agents_posterior = zeros(N_pop, N_hyp)
     agents_hypothesis = zeros(N_pop, 1)
-    posterior_mean = zeros(N_pop, N_hyp)
 
     # priors over hypotheses over populations
     priors = log(priors)
@@ -85,7 +84,6 @@ function simulate(;MAP=true, N_sam=1, N_gen=10000,
 
             agents_posterior[i, :] = bayes_rule(priors[i, :], likelihood)
             posterior_history[generation, :, :] = agents_posterior
-            posterior_mean[i, :] = sum(posterior_history[:, i, :]) ./ N_gen
 
             if MAP
                 ############################
@@ -141,14 +139,14 @@ end
 
 # simulate effect of bottleneck size
 function simulate_bottlenecks(;MAP=true, canonical = true, bottlenecks=[1:10],
-                               priors = [1/3 1/3 1/3])
+                               prior = [1/3 1/3 1/3])
 
     res = zeros(length(bottlenecks), 3)
     hypotheses = canonical ? [.6 .2 .2; .2 .6 .2; .2 .2 .6] :
                              [.6 .3 .1; .2 .6 .2; .1 .3 .6]
 
     for (i, b) in enumerate(bottlenecks)
-        res[i, :] = simulate(priors = priors, H = hypotheses, N_sam = b)
+        res[i, :] = simulate(priors = prior, H = hypotheses, N_sam = b)
     end
 
     return res
